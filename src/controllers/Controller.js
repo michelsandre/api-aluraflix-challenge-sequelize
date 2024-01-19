@@ -13,7 +13,7 @@ class Controller {
   }
 
   async getRegisterById(req, res) {
-    const id = req.params.id;
+    const id = Number(req.params.id);
     try {
       const item = await this.entidadeService.getRegisterByIdService(id);
       return res.status(200).send(item);
@@ -27,6 +27,36 @@ class Controller {
     try {
       const newData = await this.entidadeService.createRegisterService(data);
       return res.status(200).send(newData);
+    } catch (error) {
+      return res.status(500).send({ message: error.message });
+    }
+  }
+
+  async updateRegister(req, res) {
+    const id = Number(req.params.id);
+    const data = req.body;
+
+    try {
+      const wasUpdated = await this.entidadeService.updateRegisterService(
+        data,
+        id
+      );
+
+      if (!wasUpdated) {
+        res.status(400).send({ message: "Register has not been updated" });
+      } else {
+        res.status(200).send({ message: "Register updated!" });
+      }
+    } catch (error) {
+      return res.status(500).send({ message: error.message });
+    }
+  }
+
+  async deleteRegister(req, res) {
+    const id = Number(req.params.id);
+    try {
+      await this.entidadeService.deleteRegisterService(id);
+      return res.status(200).send({ message: `Register ${id} deleted` });
     } catch (error) {
       return res.status(500).send({ message: error.message });
     }
